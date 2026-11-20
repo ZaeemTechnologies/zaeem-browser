@@ -64,6 +64,7 @@ class MainActivity : Activity(), BrowserHost, SensorEventListener {
     companion object {
         const val ACTION_PANIC = "com.zaeem.browser.PANIC"
         private const val REQ_FILE = 11
+        private const val REQ_VOICE = 12
         private const val REQ_PERM = 12
     }
 
@@ -315,6 +316,26 @@ class MainActivity : Activity(), BrowserHost, SensorEventListener {
         if (code == REQ_PERM) { val ok = rtPerms.all { checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED }; rtCb?.invoke(ok); rtCb = null }
     }
 
+    private var voiceCb: ((String) -> Unit)? = null
+
+    /** Voice search uses the phone's own speech recogniser (usually Google's), so the user is told before it opens. */
+    fun voiceSearch(cb: (String) -> Unit) {
+        confirm("Voice search", "Speech is processed by your phone's speech-recognition app, which is usually Google's and may send audio to its servers. ZAEEM BROWSER never receives or stores the audio.", "Continue") {
+            val i = Intent(android.speech.RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+                putExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE_MODEL, android.speech.RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+                putExtra(android.speech.RecognizerIntent.EXTRA_PROMPT, "Say what to search")
+            }
+            voiceCb = cb
+            try { externalLaunch = true; startActivityForResult(i, REQ_VOICE) } catch (e: Exception) { voiceCb = null; toast("No speech recognition app on this phone") }
+        }
+    }
+
+    /** Image search = the search engine's image results for the typed words (nothing is uploaded). */
+    fun imageSearch(query: String) {
+        if (query.isBlank()) { toast("Type what to look for first"); return }
+        openUrl("https://duckduckgo.com/?q=" + java.net.URLEncoder.encode(query.trim(), "UTF-8") + "&iax=images&ia=images")
+    }
+
     override fun chooseFile(intent: Intent, cb: ValueCallback<Array<Uri>>) {
         fileCb?.onReceiveValue(null); fileCb = cb
         try { externalLaunch = true; startActivityForResult(intent, REQ_FILE) } catch (e: Exception) { fileCb = null; cb.onReceiveValue(null) }
@@ -323,6 +344,11 @@ class MainActivity : Activity(), BrowserHost, SensorEventListener {
     @Deprecated("platform API")
     override fun onActivityResult(req: Int, res: Int, data: Intent?) {
         super.onActivityResult(req, res, data)
+        if (req == REQ_VOICE) {
+            val text = if (res == RESULT_OK) data?.getStringArrayListExtra(android.speech.RecognizerIntent.EXTRA_RESULTS)?.firstOrNull() else null
+            val cb = voiceCb; voiceCb = null
+            if (!text.isNullOrBlank()) cb?.invoke(text)
+        }
         if (req == REQ_FILE) { fileCb?.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(res, data)); fileCb = null }
     }
 
