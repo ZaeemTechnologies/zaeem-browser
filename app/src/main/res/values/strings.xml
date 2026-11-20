@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ZAEEM BROWSER</string>
+    <string name="panic_short">Panic</string>
+    <string name="panic_long">Privacy Panic Button</string>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Cleartext is permitted at the OS layer only so the user can knowingly open an HTTP page after a warning.
+     HTTPS-first upgrades by default; ZAEEM's own downloads and list updates refuse non-HTTPS in code.
+     Only system certificate authorities are trusted (no user-installed CAs). -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

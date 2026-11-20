@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="panic"
+        android:enabled="true"
+        android:icon="@drawable/ic_panic"
+        android:shortcutShortLabel="@string/panic_short"
+        android:shortcutLongLabel="@string/panic_long">
+        <intent
+            android:action="com.zaeem.browser.PANIC"
+            android:targetPackage="com.zaeem.browser"
+            android:targetClass="com.zaeem.browser.MainActivity" />
+    </shortcut>
+</shortcuts>

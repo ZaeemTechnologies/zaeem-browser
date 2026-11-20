@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Zaeem" parent="@android:style/Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/zaeem_bg</item>
+        <item name="android:statusBarColor">@color/zaeem_bg</item>
+        <item name="android:navigationBarColor">@color/zaeem_bg</item>
+        <item name="android:colorAccent">@color/zaeem_emerald</item>
+        <item name="android:textColorPrimary">@color/zaeem_text</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+</resources>
