@@ -138,8 +138,8 @@ class TabManager(private val app: ZaeemApp) {
 
     private fun errorPage(title: String, msg: String) =
         "<html><head><meta name='viewport' content='width=device-width,initial-scale=1'></head>" +
-            "<body style='background:#050807;color:#eaf5f0;font-family:sans-serif;padding:28px'>" +
-            "<h2 style='color:#6cf2c2'>${TextUtils.htmlEncode(title)}</h2><p style='color:#8fa69c'>${TextUtils.htmlEncode(msg)}</p></body></html>"
+            "<body style='background:#080C11;color:#F3F6FA;font-family:sans-serif;padding:28px'>" +
+            "<h2 style='color:#79C5F4'>${TextUtils.htmlEncode(title)}</h2><p style='color:#8695A5'>${TextUtils.htmlEncode(msg)}</p></body></html>"
 
     inner class Client(private val tab: Tab) : WebViewClient() {
         override fun shouldOverrideUrlLoading(v: WebView, r: WebResourceRequest): Boolean {
