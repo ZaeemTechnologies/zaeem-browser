@@ -157,10 +157,8 @@ class HomeScreen : Screen() {
             orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL
             background = Ui.round(c, Ui.SURFACE, 28, Ui.STROKE); setPadding(Ui.dp(c, 12), 0, Ui.dp(c, 8), 0)
         }
-        pill.addView(icon("🔍", "Search") { val t = search.text.toString(); if (t.isNotBlank()) a.openUrl(t) })
         pill.addView(search, LinearLayout.LayoutParams(0, -2, 1f))
-        pill.addView(icon("🎤", "Voice search") { a.voiceSearch { t -> search.setText(t); a.openUrl(t) } })
-        pill.addView(icon("🖼", "Image search") { a.imageSearch(search.text.toString()) })
+        pill.addView(icon("🔍", "Search") { val t = search.text.toString(); if (t.isNotBlank()) a.openUrl(t) })
         col.addView(pill, Ui.lp(c, 16))
 
         val ok = protectionOk(cfg)
