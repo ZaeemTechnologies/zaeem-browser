@@ -161,6 +161,7 @@ class HomeScreen : Screen() {
             orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL
             background = Ui.round(c, Ui.SURFACE, 28, Ui.STROKE); setPadding(Ui.dp(c, 12), 0, Ui.dp(c, 8), 0)
         }
+        pill.addView(Glyph(c, "shieldlock", Ui.EMERALD), LinearLayout.LayoutParams(Ui.dp(c, 22), Ui.dp(c, 22)).apply { leftMargin = Ui.dp(c, 4) })
         pill.addView(search, LinearLayout.LayoutParams(0, -2, 1f))
         pill.addView(SearchIcon(c).apply { setPadding(Ui.dp(c, 10), Ui.dp(c, 8), Ui.dp(c, 10), Ui.dp(c, 8)); isClickable = true; contentDescription = "Search"; setOnClickListener { val t = search.text.toString(); if (t.isNotBlank()) a.openUrl(t) } }, LinearLayout.LayoutParams(Ui.dp(c, 44), Ui.dp(c, 44)))
         if (false) pill.addView(icon("🔍", "Search") { val t = search.text.toString(); if (t.isNotBlank()) a.openUrl(t) })
@@ -169,15 +170,18 @@ class HomeScreen : Screen() {
         val ok = protectionOk(cfg)
         val hero = LinearLayout(c).apply { orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER }
         hero.addView(GlobeView(c), LinearLayout.LayoutParams(Ui.dp(c, 150), Ui.dp(c, 150)))
-        hero.addView(Ui.text(c, "Browsing. On your terms.", 16f, Ui.TEXT, true), Ui.lp(c, 2))
+        hero.addView(LinearLayout(c).apply { gravity = Gravity.CENTER; addView(Ui.text(c, "Browsing. ", 22f, Ui.TEXT, true)); addView(Ui.text(c, "On your terms.", 22f, Ui.EMERALD, true)) }, Ui.lp(c, 2))
         hero.addView(Ui.text(c, "Privacy. Precision. Independence.", 12f, Ui.MUTED), Ui.lp(c, 4))
-        hero.addView(Ui.text(c, (if (ok) "Protection on" else "Reduced protection") + " · " + (a.app.prefs.matchingPreset()?.name?.lowercase()?.replaceFirstChar { it.uppercase() } ?: "Custom") + " preset · " + a.space.name, 12f, if (ok) Ui.MINT else Ui.WARN), Ui.lp(c, 10))
+        val chip = LinearLayout(c).apply { gravity = Gravity.CENTER_VERTICAL; background = Ui.round(c, Ui.BG, 20, Ui.STROKE); setPadding(Ui.dp(c, 12), Ui.dp(c, 6), Ui.dp(c, 14), Ui.dp(c, 6)) }
+        chip.addView(Glyph(c, if (ok) "shieldcheck" else "warn", if (ok) Ui.EMERALD else Ui.WARN), LinearLayout.LayoutParams(Ui.dp(c, 18), Ui.dp(c, 18)).apply { rightMargin = Ui.dp(c, 8) })
+        chip.addView(Ui.text(c, (if (ok) "Protection on" else "Reduced protection") + " · " + (a.app.prefs.matchingPreset()?.name?.lowercase()?.replaceFirstChar { it.uppercase() } ?: "Custom") + " preset · " + a.space.name, 12f, if (ok) Ui.MINT else Ui.WARN))
+        hero.addView(chip, Ui.lp(c, 12))
         col.addView(hero, Ui.lp(c, 18))
 
         fun tile(title: String, glyph: String, go: () -> Unit) = LinearLayout(c).apply {
             orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER; isClickable = true
-            background = Ui.ripple(c, Ui.round(c, Ui.SURFACE, 16, Ui.STROKE)); setPadding(Ui.dp(c, 8), Ui.dp(c, 18), Ui.dp(c, 8), Ui.dp(c, 18))
-            addView(Ui.text(c, glyph, 26f, Ui.EMERALD)); addView(Ui.text(c, title, 13f, Ui.TEXT, true).apply { gravity = Gravity.CENTER }, Ui.lp(c, 6))
+            background = Ui.ripple(c, Ui.round(c, Ui.SURFACE, 20, Ui.STROKE)); setPadding(Ui.dp(c, 8), Ui.dp(c, 16), Ui.dp(c, 8), Ui.dp(c, 16))
+            addView(Glyph(c, glyph, Ui.EMERALD), LinearLayout.LayoutParams(Ui.dp(c, 32), Ui.dp(c, 32))); addView(Ui.text(c, title, 13f, Ui.TEXT, true).apply { gravity = Gravity.CENTER }, Ui.lp(c, 6))
             setOnClickListener { go() }
         }
         fun row(l: View, r: View) = LinearLayout(c).apply {
@@ -185,10 +189,10 @@ class HomeScreen : Screen() {
             addView(l, LinearLayout.LayoutParams(0, -2, 1f).apply { rightMargin = Ui.dp(c, 6) })
             addView(r, LinearLayout.LayoutParams(0, -2, 1f).apply { leftMargin = Ui.dp(c, 6) })
         }
-        col.addView(row(tile("Privacy\nDashboard", "✓") { a.push(DashboardScreen()) }, tile("One-Tap\nErase", "✕") { a.push(EraseScreen()) }), Ui.lp(c, 14))
-        col.addView(row(tile("Lock\nBrowser", "◉") { a.lockNow() }, tile("Private\nSpaces", "◫") { a.push(SpacesScreen()) }), Ui.lp(c, 12))
-        col.addView(row(tile("Timed\nSession", "⏱") { a.push(SessionScreen()) }, tile("Panic\nButton", "⚠") { a.push(PanicScreen()) }), Ui.lp(c, 12))
-        col.addView(row(tile("Private\nVault", "✦") { a.push(VaultScreen()) }, tile("Tracker\nRadar", "◎") { a.push(TrackerRadarScreen()) }), Ui.lp(c, 12))
+        col.addView(row(tile("Privacy\nDashboard", "shieldcheck") { a.push(DashboardScreen()) }, tile("One-Tap\nErase", "erase") { a.push(EraseScreen()) }), Ui.lp(c, 14))
+        col.addView(row(tile("Lock\nBrowser", "lock") { a.lockNow() }, tile("Private\nSpaces", "grid") { a.push(SpacesScreen()) }), Ui.lp(c, 12))
+        col.addView(row(tile("Timed\nSession", "timer") { a.push(SessionScreen()) }, tile("Panic\nButton", "warn") { a.push(PanicScreen()) }), Ui.lp(c, 12))
+        col.addView(row(tile("Private\nVault", "vault") { a.push(VaultScreen()) }, tile("Tracker\nRadar", "radar") { a.push(TrackerRadarScreen()) }), Ui.lp(c, 12))
         scroll.addView(col); root.addView(scroll, LinearLayout.LayoutParams(-1, 0, 1f))
         root.addView(bottomNav(a, 0))
         return root
@@ -201,18 +205,21 @@ class HomeScreen : Screen() {
 
 fun bottomNav(a: MainActivity, selected: Int): View {
     val c: Context = a
-    val bar = LinearLayout(c).apply { orientation = LinearLayout.HORIZONTAL; setBackgroundColor(Ui.SURFACE); setPadding(0, Ui.dp(c, 6), 0, Ui.dp(c, 6)) }
+    val wrap = FrameLayout(c).apply { setPadding(Ui.dp(c, 8), Ui.dp(c, 4), Ui.dp(c, 8), Ui.dp(c, 6)) }
+    val bar = LinearLayout(c).apply { orientation = LinearLayout.HORIZONTAL; background = Ui.round(c, Ui.SURFACE, 24, Ui.STROKE); setPadding(0, Ui.dp(c, 8), 0, Ui.dp(c, 8)) }
     val tabs = a.app.tabs.tabs.size
-    val items = listOf("⌂" to "Home", "▣" to "Tabs${if (tabs > 0) " ($tabs)" else ""}", "↓" to "Downloads", "≡" to "Menu")
+    val items = listOf("home" to "Home", "tabs" to "Tabs${if (tabs > 0) " ($tabs)" else ""}", "download" to "Downloads", "menu" to "Menu")
     items.forEachIndexed { i, (g, l) ->
+        val col = if (i == selected) Ui.EMERALD else Ui.MUTED
         bar.addView(LinearLayout(c).apply {
-            orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER; isClickable = true
-            addView(Ui.text(c, g, 20f, if (i == selected) Ui.EMERALD else Ui.MUTED))
-            addView(Ui.text(c, l, 11f, if (i == selected) Ui.EMERALD else Ui.MUTED))
+            orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER; isClickable = true; minimumHeight = Ui.dp(c, 48)
+            addView(Glyph(c, g, col), LinearLayout.LayoutParams(Ui.dp(c, 24), Ui.dp(c, 24)))
+            addView(Ui.text(c, l, 11f, col))
             setOnClickListener { when (i) { 0 -> a.goHome(); 1 -> a.push(TabsScreen()); 2 -> a.push(DownloadsScreen()); else -> a.push(SettingsScreen()) } }
         }, LinearLayout.LayoutParams(0, -2, 1f))
     }
-    return bar
+    wrap.addView(bar)
+    return wrap
 }
 
 // ============================================================ 16. Search & navigation (browser)
@@ -358,5 +365,37 @@ class SearchIcon(c: Context) : View(c) {
         p.color = Ui.TEXT; p.strokeWidth = s * .09f
         cv.drawCircle(ox + s * .42f, oy + s * .42f, s * .30f, p)
         cv.drawLine(ox + s * .64f, oy + s * .64f, ox + s * .90f, oy + s * .90f, p)
+    }
+}
+
+
+/** Matte line icons (24-unit grid, ~1.8 stroke), drawn with Canvas so they follow the theme. */
+class Glyph(c: Context, private val kind: String, private val color: Int) : View(c) {
+    private val p = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply { style = android.graphics.Paint.Style.STROKE; strokeCap = android.graphics.Paint.Cap.ROUND; strokeJoin = android.graphics.Paint.Join.ROUND }
+    override fun onDraw(cv: android.graphics.Canvas) {
+        val u = minOf(width, height) / 24f; if (u <= 0f) return
+        cv.save(); cv.translate((width - 24 * u) / 2f, (height - 24 * u) / 2f); cv.scale(u, u)
+        p.color = color; p.strokeWidth = 1.8f
+        fun path(f: android.graphics.Path.() -> Unit) = cv.drawPath(android.graphics.Path().apply(f), p)
+        fun line(a: Float, b: Float, x: Float, y: Float) = cv.drawLine(a, b, x, y, p)
+        fun shield() = path { moveTo(12f, 2.5f); lineTo(20f, 5.5f); lineTo(20f, 11.5f); cubicTo(20f, 16.5f, 16.5f, 20.5f, 12f, 21.5f); cubicTo(7.5f, 20.5f, 4f, 16.5f, 4f, 11.5f); lineTo(4f, 5.5f); close() }
+        fun lockBody(l: Float, t: Float, r: Float, b: Float) = cv.drawRoundRect(l, t, r, b, 1.5f, 1.5f, p)
+        when (kind) {
+            "shield" -> shield()
+            "shieldcheck" -> { shield(); path { moveTo(8.5f, 12f); lineTo(11f, 14.5f); lineTo(15.5f, 9.5f) } }
+            "shieldlock" -> { shield(); lockBody(9f, 11f, 15f, 16f); path { moveTo(10.2f, 11f); lineTo(10.2f, 9.6f); cubicTo(10.2f, 7.4f, 13.8f, 7.4f, 13.8f, 9.6f); lineTo(13.8f, 11f) } }
+            "erase" -> { cv.drawCircle(12f, 12f, 8.5f, p); line(9f, 9f, 15f, 15f); line(15f, 9f, 9f, 15f) }
+            "lock" -> { lockBody(5f, 10.5f, 19f, 21f); path { moveTo(8f, 10.5f); lineTo(8f, 7.5f); cubicTo(8f, 1.5f, 16f, 1.5f, 16f, 7.5f); lineTo(16f, 10.5f) }; cv.drawCircle(12f, 15.5f, 1.2f, p) }
+            "grid" -> { lockBody(3.5f, 3.5f, 10.5f, 10.5f); lockBody(13.5f, 3.5f, 20.5f, 10.5f); lockBody(3.5f, 13.5f, 10.5f, 20.5f); lockBody(13.5f, 13.5f, 20.5f, 20.5f) }
+            "tabs" -> { lockBody(3.5f, 3.5f, 10.5f, 10.5f); lockBody(13.5f, 3.5f, 20.5f, 10.5f); lockBody(3.5f, 13.5f, 10.5f, 20.5f); lockBody(13.5f, 13.5f, 20.5f, 20.5f) }
+            "timer" -> { cv.drawCircle(12f, 13.5f, 8f, p); line(12f, 13.5f, 12f, 8.5f); line(12f, 13.5f, 15f, 15f); line(9.5f, 2.5f, 14.5f, 2.5f) }
+            "warn" -> { path { moveTo(12f, 3f); lineTo(22f, 20.5f); lineTo(2f, 20.5f); close() }; line(12f, 9.5f, 12f, 14f); line(12f, 17f, 12f, 17.1f) }
+            "vault" -> { lockBody(3f, 3f, 21f, 21f); cv.drawCircle(12f, 12f, 4.5f, p); cv.drawCircle(12f, 12f, 1f, p) }
+            "radar" -> { cv.drawCircle(12f, 12f, 9f, p); cv.drawCircle(12f, 12f, 5.5f, p); cv.drawCircle(12f, 12f, 1.8f, p) }
+            "home" -> path { moveTo(3f, 11f); lineTo(12f, 3.5f); lineTo(21f, 11f); lineTo(21f, 20.5f); lineTo(15f, 20.5f); lineTo(15f, 14f); lineTo(9f, 14f); lineTo(9f, 20.5f); lineTo(3f, 20.5f); close() }
+            "download" -> { line(12f, 3.5f, 12f, 15f); path { moveTo(7f, 10.5f); lineTo(12f, 15.5f); lineTo(17f, 10.5f) }; line(4f, 20f, 20f, 20f) }
+            "menu" -> { line(4f, 7f, 20f, 7f); line(4f, 12f, 20f, 12f); line(4f, 17f, 20f, 17f) }
+        }
+        cv.restore()
     }
 }
