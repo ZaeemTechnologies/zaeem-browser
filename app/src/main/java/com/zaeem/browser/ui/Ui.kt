@@ -13,10 +13,10 @@ import android.widget.*
 object Ui {
     // ZAEEM Obsidian Blue tokens. Names kept from v1: EMERALD = primary accent (Signature Azure), MINT = secondary accent (Ice Blue).
     // Set once per Activity start by applyTheme(); read when screens are built.
-    var BG = 0xFF080C11.toInt(); var SURFACE = 0xFF101820.toInt(); var SURFACE2 = 0xFF1B2633.toInt()
-    var STROKE = 0xFF314355.toInt(); var EMERALD = 0xFF39A9EB.toInt(); var MINT = 0xFF79C5F4.toInt()
-    var TEXT = 0xFFF3F6FA.toInt(); var MUTED = 0xFF8695A5.toInt(); var DANGER = 0xFFF2A0A5.toInt(); var WARN = 0xFFE4BC78.toInt()
-    var OK = 0xFF78C8A4.toInt(); var ON_ACCENT = 0xFF080C11.toInt(); var DANGER_FG = 0xFF080C11.toInt(); var isLight = false
+    var BG = 0xFF050807.toInt(); var SURFACE = 0xFF0C1411.toInt(); var SURFACE2 = 0xFF132019.toInt()
+    var STROKE = 0xFF1F3A30.toInt(); var EMERALD = 0xFF14D48A.toInt(); var MINT = 0xFF7CF5CB.toInt()
+    var TEXT = 0xFFEAF5F0.toInt(); var MUTED = 0xFF8FA69C.toInt(); var DANGER = 0xFFFF4040.toInt(); var WARN = 0xFFFFB84D.toInt()
+    var OK = 0xFF78C8A4.toInt(); var ON_ACCENT = 0xFF03150E.toInt(); var DANGER_FG = 0xFFFFFFFF.toInt(); var isLight = false
 
     /** mode: "obsidian" (default), "amoled", "light", "system". */
     fun applyTheme(mode: String, systemDark: Boolean) {
@@ -25,15 +25,15 @@ object Ui {
         when (m) {
             "light" -> {
                 BG = 0xFFF5F7FA.toInt(); SURFACE = 0xFFFFFFFF.toInt(); SURFACE2 = 0xFFE7EDF3.toInt(); STROKE = 0xFFCBD5E1.toInt()
-                EMERALD = 0xFF176B9E.toInt(); MINT = 0xFF176B9E.toInt(); TEXT = 0xFF101820.toInt(); MUTED = 0xFF4D5C6C.toInt()
+                EMERALD = 0xFF0B7A55.toInt(); MINT = 0xFF0B7A55.toInt(); TEXT = 0xFF0C1411.toInt(); MUTED = 0xFF4D5C6C.toInt()
                 DANGER = 0xFFA52C35.toInt(); WARN = 0xFF805600.toInt(); OK = 0xFF176B50.toInt(); ON_ACCENT = 0xFFFFFFFF.toInt(); DANGER_FG = 0xFFFFFFFF.toInt()
             }
             else -> {
-                BG = if (m == "amoled") 0xFF000000.toInt() else 0xFF080C11.toInt()
-                SURFACE = if (m == "amoled") 0xFF080C11.toInt() else 0xFF101820.toInt()
-                SURFACE2 = if (m == "amoled") 0xFF101820.toInt() else 0xFF1B2633.toInt()
-                STROKE = 0xFF314355.toInt(); EMERALD = 0xFF39A9EB.toInt(); MINT = 0xFF79C5F4.toInt(); TEXT = 0xFFF3F6FA.toInt(); MUTED = 0xFF8695A5.toInt()
-                DANGER = 0xFFF2A0A5.toInt(); WARN = 0xFFE4BC78.toInt(); OK = 0xFF78C8A4.toInt(); ON_ACCENT = 0xFF080C11.toInt(); DANGER_FG = 0xFF080C11.toInt()
+                BG = if (m == "amoled") 0xFF000000.toInt() else 0xFF050807.toInt()
+                SURFACE = if (m == "amoled") 0xFF050807.toInt() else 0xFF0C1411.toInt()
+                SURFACE2 = if (m == "amoled") 0xFF0C1411.toInt() else 0xFF132019.toInt()
+                STROKE = 0xFF1F3A30.toInt(); EMERALD = 0xFF14D48A.toInt(); MINT = 0xFF7CF5CB.toInt(); TEXT = 0xFFEAF5F0.toInt(); MUTED = 0xFF8FA69C.toInt()
+                DANGER = 0xFFFF4040.toInt(); WARN = 0xFFFFB84D.toInt(); OK = 0xFF78C8A4.toInt(); ON_ACCENT = 0xFF03150E.toInt(); DANGER_FG = 0xFFFFFFFF.toInt()
             }
         }
     }
