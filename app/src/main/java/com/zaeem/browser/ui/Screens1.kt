@@ -213,8 +213,8 @@ fun bottomNav(a: MainActivity, selected: Int): View {
         val col = if (i == selected) Ui.EMERALD else Ui.MUTED
         bar.addView(LinearLayout(c).apply {
             orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER; isClickable = true; minimumHeight = Ui.dp(c, 48)
-            addView(Glyph(c, g, col), LinearLayout.LayoutParams(Ui.dp(c, 24), Ui.dp(c, 24)))
-            addView(Ui.text(c, l, 11f, col))
+            addView(Glyph(c, g, col), LinearLayout.LayoutParams(Ui.dp(c, 24), Ui.dp(c, 24)).apply { gravity = Gravity.CENTER_HORIZONTAL })
+            addView(Ui.text(c, l, 11f, col).apply { gravity = Gravity.CENTER; maxLines = 1 }, LinearLayout.LayoutParams(-1, -2).apply { topMargin = Ui.dp(c, 3) })
             setOnClickListener { when (i) { 0 -> a.goHome(); 1 -> a.push(TabsScreen()); 2 -> a.push(DownloadsScreen()); else -> a.push(SettingsScreen()) } }
         }, LinearLayout.LayoutParams(0, -2, 1f))
     }
