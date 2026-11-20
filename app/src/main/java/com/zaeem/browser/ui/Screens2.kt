@@ -87,7 +87,7 @@ class EraseScreen : Screen() {
             add(Ui.toggle(a, s.label, null, s in scopes()) { on -> if (mode == EraseMode.CUSTOM) { if (on) custom.add(s) else custom.remove(s) } else { custom.clear(); custom.addAll(mode.scopes); mode = EraseMode.CUSTOM; if (on) custom.add(s) else custom.remove(s); a.refresh() } }, 6)
         }
         add(Ui.button(a, "Erase Now", 0) { confirmErase() }, 18)
-        add(Ui.text(a, "This deletes ZAEEM BROWSER's local data. Websites, search providers, your network and Android may still hold their own records (see Browser Settings > What is retained).", 11f, Ui.MUTED), 12)
+        add(Ui.text(a, "This deletes ZAEEM Browser's local data. Websites, search providers, your network and Android may still hold their own records (see Browser Settings > What is retained).", 11f, Ui.MUTED), 12)
     }
 
     private fun confirmErase() {
@@ -127,7 +127,7 @@ class PanicScreen : Screen() {
         add(Ui.toggle(a, "Lock the app", "Requires your PIN, password or biometrics to reopen", p.panicLock) { p.panicLock = it }, 6)
         add(Ui.section(a, "Shortcuts"))
         add(Ui.toggle(a, "Shake to activate", "Two hard shakes while the app is open", p.panicShake) { p.panicShake = it }, 6)
-        add(Ui.text(a, "Also: long-press the ZAEEM BROWSER app icon and tap Panic, or use ⋮ > PANIC in the browser menu. After it runs, the app restarts into a clean home screen.", 12f, Ui.MUTED), 10)
+        add(Ui.text(a, "Also: long-press the ZAEEM Browser app icon and tap Panic, or use ⋮ > PANIC in the browser menu. After it runs, the app restarts into a clean home screen.", 12f, Ui.MUTED), 10)
     }
 }
 
