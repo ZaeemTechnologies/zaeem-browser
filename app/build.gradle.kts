@@ -8,7 +8,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.zaeem.browser"
+        applicationId = "com.zaeemtechnologies.browser"
         minSdk = 29          // platform BiometricManager/BiometricPrompt, secure Keystore AES-GCM
         targetSdk = 35
         versionCode = 1
