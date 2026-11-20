@@ -8,7 +8,7 @@
         android:shortcutLongLabel="@string/panic_long">
         <intent
             android:action="com.zaeem.browser.PANIC"
-            android:targetPackage="com.zaeem.browser"
+            android:targetPackage="com.zaeemtechnologies.browser"
             android:targetClass="com.zaeem.browser.MainActivity" />
     </shortcut>
 </shortcuts>
