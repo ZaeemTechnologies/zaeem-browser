@@ -24,10 +24,11 @@ class SplashView(c: Context, note: String) : LinearLayout(c) {
     }
     init {
         orientation = VERTICAL; gravity = Gravity.CENTER; setBackgroundColor(Ui.BG); setPadding(Ui.dp(c, 48), 0, Ui.dp(c, 48), 0)
-        addView(ShieldView(c, 0), LayoutParams(Ui.dp(c, 120), Ui.dp(c, 130)))
-        addView(Ui.text(c, "ZAEEM", 32f, Ui.MINT, true).apply { gravity = Gravity.CENTER; letterSpacing = 0.12f }, Ui.lp(c, 20))
+        addView(GlobeView(c), LayoutParams(Ui.dp(c, 140), Ui.dp(c, 140)))
+        addView(Ui.text(c, "ZAEEM", 32f, Ui.TEXT, true).apply { gravity = Gravity.CENTER; letterSpacing = 0.12f }, Ui.lp(c, 12))
         addView(Ui.text(c, "B R O W S E R", 15f, Ui.EMERALD, true).apply { gravity = Gravity.CENTER })
-        addView(Ui.text(c, "Your Privacy. Our Priority.", 14f, Ui.EMERALD).apply { gravity = Gravity.CENTER }, Ui.lp(c, 28))
+        addView(Ui.text(c, "By Zaeem Technologies", 13f, Ui.MUTED).apply { gravity = Gravity.CENTER }, Ui.lp(c, 20))
+        addView(Ui.text(c, "Browsing. On your terms.", 14f, Ui.MINT).apply { gravity = Gravity.CENTER }, Ui.lp(c, 8))
         addView(bar, Ui.lp(c, 28)); addView(status, Ui.lp(c, 8))
     }
     fun setProgress(f: Float, label: String) { bar.progress = (f * 100).toInt(); status.text = label }
@@ -107,14 +108,14 @@ class LockView(private val a: MainActivity, private val onUnlocked: () -> Unit) 
         else if (msg.text.startsWith("Too many")) msg.text = ""
     }
 
-    private fun biometric() { lock.biometricPrompt(a, "Unlock ZAEEM BROWSER", { onUnlocked() }) { } }
+    private fun biometric() { lock.biometricPrompt(a, "Unlock ZAEEM Browser", { onUnlocked() }) { } }
 
     fun start() { if (lock.biometricAvailable(a)) biometric(); if (lock.lockoutRemaining() > 0) h.post(tick) }
 }
 
 // ============================================================ First run
 class OnboardingScreen : Screen() {
-    override fun build(): View = Ui.scaffold(a, "Welcome to ZAEEM BROWSER", null) {
+    override fun build(): View = Ui.scaffold(a, "Welcome to ZAEEM Browser", null) {
         add(Ui.text(a, "Privacy by default. Choose how strict you want to start. You can change every setting later.", 14f, Ui.MUTED))
         for ((p, d) in listOf(
             PrivacyPreset.BALANCED to "HTTPS-first, tracker and third-party-cookie blocking, standard fingerprint protection. Best compatibility.",
@@ -291,7 +292,7 @@ class BrowserScreen : Screen() {
     private fun menu() {
         val items = listOf("New tab", "Connection security", "Add to Private Vault", "Share link", "Tracker Radar", "Privacy Dashboard",
             "Downloads", "Settings", "Lock now", "Close this tab", "PANIC")
-        a.choose("ZAEEM BROWSER", items) { i ->
+        a.choose("ZAEEM Browser", items) { i ->
             val t = a.app.tabs.active
             when (i) {
                 0 -> { a.app.tabs.open(a.space, null); onShow() }
