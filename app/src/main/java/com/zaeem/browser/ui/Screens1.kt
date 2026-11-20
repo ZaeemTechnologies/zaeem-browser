@@ -138,7 +138,10 @@ class HomeScreen : Screen() {
         val col = LinearLayout(c).apply { orientation = LinearLayout.VERTICAL; setPadding(Ui.dp(c, 16), Ui.dp(c, 10), Ui.dp(c, 16), Ui.dp(c, 16)) }
         val top = LinearLayout(c).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
         top.addView(Ui.text(c, "☰", 24f, Ui.TEXT).apply { setPadding(Ui.dp(c, 6), 0, Ui.dp(c, 12), 0); isClickable = true; setOnClickListener { a.push(SettingsScreen()) } })
-        top.addView(Ui.text(c, a.space.name, 13f, Ui.MUTED, true), LinearLayout.LayoutParams(0, -2, 1f))
+        val brand = LinearLayout(c).apply { orientation = LinearLayout.VERTICAL }
+        brand.addView(Ui.text(c, "ZAEEM Browser", 16f, Ui.TEXT, true))
+        brand.addView(Ui.text(c, "By Zaeem Technologies", 11f, Ui.MUTED))
+        top.addView(brand, LinearLayout.LayoutParams(0, -2, 1f))
         top.addView(ShieldView(c, 1).apply { setOnClickListener { a.push(DashboardScreen()) } }, LinearLayout.LayoutParams(Ui.dp(c, 30), Ui.dp(c, 34)))
         col.addView(top)
 
@@ -159,14 +162,16 @@ class HomeScreen : Screen() {
             background = Ui.round(c, Ui.SURFACE, 28, Ui.STROKE); setPadding(Ui.dp(c, 12), 0, Ui.dp(c, 8), 0)
         }
         pill.addView(search, LinearLayout.LayoutParams(0, -2, 1f))
-        pill.addView(icon("🔍", "Search") { val t = search.text.toString(); if (t.isNotBlank()) a.openUrl(t) })
+        pill.addView(SearchIcon(c).apply { setPadding(Ui.dp(c, 10), Ui.dp(c, 8), Ui.dp(c, 10), Ui.dp(c, 8)); isClickable = true; contentDescription = "Search"; setOnClickListener { val t = search.text.toString(); if (t.isNotBlank()) a.openUrl(t) } }, LinearLayout.LayoutParams(Ui.dp(c, 44), Ui.dp(c, 44)))
+        if (false) pill.addView(icon("🔍", "Search") { val t = search.text.toString(); if (t.isNotBlank()) a.openUrl(t) })
         col.addView(pill, Ui.lp(c, 16))
 
         val ok = protectionOk(cfg)
         val hero = LinearLayout(c).apply { orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER }
-        hero.addView(ShieldView(c, if (ok) 1 else 2, if (ok) Ui.EMERALD else Ui.WARN), LinearLayout.LayoutParams(Ui.dp(c, 84), Ui.dp(c, 92)))
-        hero.addView(Ui.text(c, if (ok) "Protected" else "Reduced protection", 20f, if (ok) Ui.MINT else Ui.WARN, true), Ui.lp(c, 6))
-        hero.addView(Ui.text(c, (a.app.prefs.matchingPreset()?.name?.lowercase()?.replaceFirstChar { it.uppercase() } ?: "Custom") + " preset · zero history", 12f, Ui.MUTED))
+        hero.addView(GlobeView(c), LinearLayout.LayoutParams(Ui.dp(c, 150), Ui.dp(c, 150)))
+        hero.addView(Ui.text(c, "Browsing. On your terms.", 16f, Ui.TEXT, true), Ui.lp(c, 2))
+        hero.addView(Ui.text(c, "Privacy. Precision. Independence.", 12f, Ui.MUTED), Ui.lp(c, 4))
+        hero.addView(Ui.text(c, (if (ok) "Protection on" else "Reduced protection") + " · " + (a.app.prefs.matchingPreset()?.name?.lowercase()?.replaceFirstChar { it.uppercase() } ?: "Custom") + " preset · " + a.space.name, 12f, if (ok) Ui.MINT else Ui.WARN), Ui.lp(c, 10))
         col.addView(hero, Ui.lp(c, 18))
 
         fun tile(title: String, glyph: String, go: () -> Unit) = LinearLayout(c).apply {
@@ -180,10 +185,10 @@ class HomeScreen : Screen() {
             addView(l, LinearLayout.LayoutParams(0, -2, 1f).apply { rightMargin = Ui.dp(c, 6) })
             addView(r, LinearLayout.LayoutParams(0, -2, 1f).apply { leftMargin = Ui.dp(c, 6) })
         }
-        col.addView(row(tile("Privacy\nDashboard", "🛡") { a.push(DashboardScreen()) }, tile("One-Tap\nErase", "🗑") { a.push(EraseScreen()) }), Ui.lp(c, 14))
-        col.addView(row(tile("Lock\nBrowser", "🔒") { a.lockNow() }, tile("Private\nSpaces", "◫") { a.push(SpacesScreen()) }), Ui.lp(c, 12))
+        col.addView(row(tile("Privacy\nDashboard", "✓") { a.push(DashboardScreen()) }, tile("One-Tap\nErase", "✕") { a.push(EraseScreen()) }), Ui.lp(c, 14))
+        col.addView(row(tile("Lock\nBrowser", "◉") { a.lockNow() }, tile("Private\nSpaces", "◫") { a.push(SpacesScreen()) }), Ui.lp(c, 12))
         col.addView(row(tile("Timed\nSession", "⏱") { a.push(SessionScreen()) }, tile("Panic\nButton", "⚠") { a.push(PanicScreen()) }), Ui.lp(c, 12))
-        col.addView(row(tile("Private\nVault", "🔑") { a.push(VaultScreen()) }, tile("Tracker\nRadar", "◎") { a.push(TrackerRadarScreen()) }), Ui.lp(c, 12))
+        col.addView(row(tile("Private\nVault", "✦") { a.push(VaultScreen()) }, tile("Tracker\nRadar", "◎") { a.push(TrackerRadarScreen()) }), Ui.lp(c, 12))
         scroll.addView(col); root.addView(scroll, LinearLayout.LayoutParams(-1, 0, 1f))
         root.addView(bottomNav(a, 0))
         return root
@@ -340,5 +345,18 @@ class TabsScreen : Screen() {
             }
             if (tm.tabs.isNotEmpty()) add(Ui.button(a, "Close all tabs", 1) { tm.closeAll(); a.refresh() }, 16)
         }
+    }
+}
+
+
+/** Minimal 24dp-style search glyph (circle + handle), drawn in the accent colour. */
+class SearchIcon(c: Context) : View(c) {
+    private val p = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply { style = android.graphics.Paint.Style.STROKE; strokeCap = android.graphics.Paint.Cap.ROUND }
+    override fun onDraw(cv: android.graphics.Canvas) {
+        val w = (width - paddingLeft - paddingRight).toFloat(); val h = (height - paddingTop - paddingBottom).toFloat(); val s = minOf(w, h)
+        val ox = paddingLeft + (w - s) / 2f; val oy = paddingTop + (h - s) / 2f
+        p.color = Ui.TEXT; p.strokeWidth = s * .09f
+        cv.drawCircle(ox + s * .42f, oy + s * .42f, s * .30f, p)
+        cv.drawLine(ox + s * .64f, oy + s * .64f, ox + s * .90f, oy + s * .90f, p)
     }
 }
