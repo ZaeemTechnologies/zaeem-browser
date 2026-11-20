@@ -386,7 +386,7 @@ class BrowserSettingsScreen : Screen() {
         }, 4)
         note(a, "Search suggestions are not requested: what you type is only sent when you press Go.", 4)
         add(Ui.section(a, "Appearance"))
-        val themeIds = listOf("obsidian", "amoled", "light", "system"); val themeNames = listOf("Obsidian Blue (default)", "Absolute Black (AMOLED)", "Platinum Light", "Follow system")
+        val themeIds = listOf("obsidian", "amoled", "light", "system"); val themeNames = listOf("Emerald (default)", "Absolute Black (AMOLED)", "Platinum Light", "Follow system")
         add(Ui.nav(a, "Theme", themeNames[themeIds.indexOf(p.str("theme", "obsidian")).coerceAtLeast(0)]) {
             a.choose("Theme", themeNames) { i -> p.put("theme", themeIds[i]); a.recreate() }
         }, 4)
