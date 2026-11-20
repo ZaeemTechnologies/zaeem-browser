@@ -59,7 +59,7 @@ class SettingsScreen : Screen() {
         if (p.matchingPreset() == null) note(a, "Custom: your settings differ from every preset.", 6)
         add(Ui.section(a, "Protection (applies to new tabs)"))
         add(Ui.kv(a, "No History Mode", "Always on", Ui.EMERALD), 0)
-        note(a, "ZAEEM BROWSER never writes browsing history, search history or session restore data.", 0)
+        note(a, "ZAEEM Browser never writes browsing history, search history or session restore data.", 0)
         add(Ui.toggle(a, "Auto-clear on exit", "Delete cookies and site data when the app closes (also swept at next launch)", cfg.clearOnExit) { v -> p.update { it.copy(clearOnExit = v) } }, 8)
         val bg = listOf("Off" to 0, "After 1 minute" to 1, "After 5 minutes" to 5, "After 15 minutes" to 15, "After 30 minutes" to 30)
         add(Ui.nav(a, "Clear data after time in background", bg.firstOrNull { it.second == cfg.clearAfterBackgroundMinutes }?.first ?: "Custom") {
@@ -127,7 +127,7 @@ class RadarView(c: Context, private val n: Int) : View(c) {
     private val p = Paint(Paint.ANTI_ALIAS_FLAG)
     override fun onDraw(cv: Canvas) {
         val cx = width / 2f; val cy = height / 2f; val r = minOf(cx, cy) * 0.92f
-        p.style = Paint.Style.STROKE; p.strokeWidth = 2f; p.color = 0x6614D48A
+        p.style = Paint.Style.STROKE; p.strokeWidth = 2f; p.color = (Ui.EMERALD and 0xFFFFFF) or 0x66000000
         for (i in 1..4) cv.drawCircle(cx, cy, r * i / 4f, p)
         cv.drawLine(cx - r, cy, cx + r, cy, p); cv.drawLine(cx, cy - r, cx, cy + r, p)
         p.style = Paint.Style.FILL; p.color = Ui.EMERALD; cv.drawCircle(cx, cy, 7f, p)
@@ -208,7 +208,7 @@ class ClipboardGuardScreen : Screen() {
         add(Ui.section(a, "Detects"))
         note(a, "• Payment-card numbers (Luhn-checked)\n• One-time codes (6 to 8 digits)\n• Private-key blocks\n• Password-like strings (mixed case, digits, symbols)", 0)
         note(a, "If you allow it, the clipboard is cleared after 60 seconds. If you block it, it is cleared immediately.", 12)
-        note(a, "Limits: Android only lets an app read the clipboard while it is in the foreground, so Guard sees copies made while ZAEEM BROWSER is open. It cannot stop other apps reading the clipboard.", 12)
+        note(a, "Limits: Android only lets an app read the clipboard while it is in the foreground, so Guard sees copies made while ZAEEM Browser is open. It cannot stop other apps reading the clipboard.", 12)
     }
 }
 
@@ -354,7 +354,7 @@ class UpdatesScreen : Screen() {
         c.addView(Ui.kv(a, "Android security patch", Build.VERSION.SECURITY_PATCH))
         c.addView(Ui.kv(a, "Android version", "${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})"))
         val pi = a.packageManager.getPackageInfo(a.packageName, 0)
-        c.addView(Ui.kv(a, "ZAEEM BROWSER", pi.versionName ?: "?"))
+        c.addView(Ui.kv(a, "ZAEEM Browser", pi.versionName ?: "?"))
         add(c, 8)
         val pkg = wv?.packageName
         if (pkg != null) {
@@ -363,7 +363,7 @@ class UpdatesScreen : Screen() {
             }, 14)
             add(Ui.button(a, "Open engine app settings", 1) { a.external(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:$pkg"))) }, 8)
         }
-        note(a, "How updates work: ZAEEM BROWSER uses the system Chromium engine (the same approach as GrapheneOS's Vanadium), so Chromium security fixes ship through Android System WebView updates, not through this app. Keep the engine and Android patch level current. Updates to ZAEEM BROWSER itself are installed from the GitHub release you built or downloaded; no background update service runs.", 14)
+        note(a, "How updates work: ZAEEM Browser uses the system Chromium engine, so Chromium security fixes ship through Android System WebView updates, not through this app. Keep the engine and Android patch level current. Updates to ZAEEM Browser itself are installed from the GitHub release you built or downloaded; no background update service runs.", 14)
     }
 }
 
@@ -385,16 +385,26 @@ class BrowserSettingsScreen : Screen() {
             a.choose("Search engine", Prefs_ENGINES.map { it.name }) { i -> p.put("engine", Prefs_ENGINES[i].id); a.refresh() }
         }, 4)
         note(a, "Search suggestions are not requested: what you type is only sent when you press Go.", 4)
+        add(Ui.section(a, "Appearance"))
+        val themeIds = listOf("obsidian", "amoled", "light", "system"); val themeNames = listOf("Obsidian Blue (default)", "Absolute Black (AMOLED)", "Platinum Light", "Follow system")
+        add(Ui.nav(a, "Theme", themeNames[themeIds.indexOf(p.str("theme", "obsidian")).coerceAtLeast(0)]) {
+            a.choose("Theme", themeNames) { i -> p.put("theme", themeIds[i]); a.recreate() }
+        }, 4)
+        note(a, "Changes the browser's own interface only. Websites are never recolored. The app reopens on the home screen to apply it; no browsing data is touched.", 4)
         add(Ui.section(a, "Tracker lists"))
         add(Ui.kv(a, "Entries", a.app.blocklist.matcher.size.toString()), 0)
         add(Ui.kv(a, "Last downloaded", if (p.blocklistUpdatedAt == 0L) "Never (using built-in seed list)" else DateFormat.getDateTimeInstance().format(Date(p.blocklistUpdatedAt))), 0)
         add(Ui.button(a, "Download larger list (HTTPS, from GitHub)", 1) { updateLists(a) }, 8)
         add(Ui.section(a, "What is retained"))
-        note(a, "Deleted by ZAEEM BROWSER: tabs, cookies, site storage, cache, downloads, permission decisions. Never stored: history, search terms, session restore.\n\nNOT under our control: the sites you visit and their logs, your search provider, your network operator/ISP, DNS resolver, any VPN, Android system logs, and your Google account if Safe Browsing or Play Services are used.", 0)
+        note(a, "Deleted by ZAEEM Browser: tabs, cookies, site storage, cache, downloads, permission decisions. Never stored: history, search terms, session restore.\n\nNOT under our control: the sites you visit and their logs, your search provider, your network operator/ISP, DNS resolver, any VPN, Android system logs, and your Google account if Safe Browsing or Play Services are used.", 0)
         add(Ui.section(a, "Engine status"))
         add(Ui.kv(a, "Startup sweep", Engine.sweepSummary), 0)
         add(Ui.section(a, "About"))
-        note(a, "ZAEEM BROWSER · no ads · no analytics · no accounts · no servers.\nOpen-source components: Android System WebView (Chromium, BSD-style), androidx.webkit (Apache-2.0), Kotlin standard library (Apache-2.0).", 0)
+        add(Ui.text(a, "ZAEEM Browser", 18f, Ui.TEXT, true), 4)
+        add(Ui.text(a, "By Zaeem Technologies", 13f, Ui.MUTED), 0)
+        add(Ui.text(a, "Browsing. On your terms.\nPrivacy. Precision. Independence.", 13f, Ui.MINT), 6)
+        add(Ui.kv(a, "Repository", "github.com/ZaeemTechnologies/zaeem-browser"), 6)
+        note(a, "ZAEEM Browser · no ads · no analytics · no accounts · no servers.\nOpen-source components: Android System WebView (Chromium, BSD-style), androidx.webkit (Apache-2.0), Kotlin standard library (Apache-2.0).", 0)
     }
 }
 
