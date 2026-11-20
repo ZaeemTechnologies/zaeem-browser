@@ -145,12 +145,23 @@ class HomeScreen : Screen() {
             hint = "Search privately or enter address"; setHintTextColor(Ui.MUTED); setTextColor(Ui.TEXT); setSingleLine()
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI; imeOptions = EditorInfo.IME_ACTION_GO
             importantForAutofill = View.IMPORTANT_FOR_AUTOFILL_NO
-            background = Ui.round(c, Ui.SURFACE, 28, Ui.STROKE); setPadding(Ui.dp(c, 20), Ui.dp(c, 14), Ui.dp(c, 20), Ui.dp(c, 14))
+            background = null; setPadding(Ui.dp(c, 6), Ui.dp(c, 14), Ui.dp(c, 6), Ui.dp(c, 14))
             setOnEditorActionListener { v, id, ev ->
                 if (id == EditorInfo.IME_ACTION_GO || (ev?.keyCode == KeyEvent.KEYCODE_ENTER)) { val t = v.text.toString(); if (t.isNotBlank()) a.openUrl(t); true } else false
             }
         }
-        col.addView(search, Ui.lp(c, 16))
+        fun icon(glyph: String, desc: String, go: () -> Unit) = Ui.text(c, glyph, 20f, Ui.EMERALD).apply {
+            setPadding(Ui.dp(c, 10), Ui.dp(c, 8), Ui.dp(c, 10), Ui.dp(c, 8)); isClickable = true; contentDescription = desc; setOnClickListener { go() }
+        }
+        val pill = LinearLayout(c).apply {
+            orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL
+            background = Ui.round(c, Ui.SURFACE, 28, Ui.STROKE); setPadding(Ui.dp(c, 12), 0, Ui.dp(c, 8), 0)
+        }
+        pill.addView(icon("🔍", "Search") { val t = search.text.toString(); if (t.isNotBlank()) a.openUrl(t) })
+        pill.addView(search, LinearLayout.LayoutParams(0, -2, 1f))
+        pill.addView(icon("🎤", "Voice search") { a.voiceSearch { t -> search.setText(t); a.openUrl(t) } })
+        pill.addView(icon("🖼", "Image search") { a.imageSearch(search.text.toString()) })
+        col.addView(pill, Ui.lp(c, 16))
 
         val ok = protectionOk(cfg)
         val hero = LinearLayout(c).apply { orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER }
