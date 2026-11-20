@@ -11,9 +11,32 @@ import android.view.ViewGroup
 import android.widget.*
 
 object Ui {
-    val BG = 0xFF050807.toInt(); val SURFACE = 0xFF0C1411.toInt(); val SURFACE2 = 0xFF132019.toInt()
-    val STROKE = 0xFF1F3A30.toInt(); val EMERALD = 0xFF14D48A.toInt(); val MINT = 0xFF7CF5CB.toInt()
-    val TEXT = 0xFFEAF5F0.toInt(); val MUTED = 0xFF8FA69C.toInt(); val DANGER = 0xFFFF4040.toInt(); val WARN = 0xFFFFB84D.toInt()
+    // ZAEEM Obsidian Blue tokens. Names kept from v1: EMERALD = primary accent (Signature Azure), MINT = secondary accent (Ice Blue).
+    // Set once per Activity start by applyTheme(); read when screens are built.
+    var BG = 0xFF080C11.toInt(); var SURFACE = 0xFF101820.toInt(); var SURFACE2 = 0xFF1B2633.toInt()
+    var STROKE = 0xFF314355.toInt(); var EMERALD = 0xFF39A9EB.toInt(); var MINT = 0xFF79C5F4.toInt()
+    var TEXT = 0xFFF3F6FA.toInt(); var MUTED = 0xFF8695A5.toInt(); var DANGER = 0xFFF2A0A5.toInt(); var WARN = 0xFFE4BC78.toInt()
+    var OK = 0xFF78C8A4.toInt(); var ON_ACCENT = 0xFF080C11.toInt(); var DANGER_FG = 0xFF080C11.toInt(); var isLight = false
+
+    /** mode: "obsidian" (default), "amoled", "light", "system". */
+    fun applyTheme(mode: String, systemDark: Boolean) {
+        val m = if (mode == "system") (if (systemDark) "obsidian" else "light") else mode
+        isLight = m == "light"
+        when (m) {
+            "light" -> {
+                BG = 0xFFF5F7FA.toInt(); SURFACE = 0xFFFFFFFF.toInt(); SURFACE2 = 0xFFE7EDF3.toInt(); STROKE = 0xFFCBD5E1.toInt()
+                EMERALD = 0xFF176B9E.toInt(); MINT = 0xFF176B9E.toInt(); TEXT = 0xFF101820.toInt(); MUTED = 0xFF4D5C6C.toInt()
+                DANGER = 0xFFA52C35.toInt(); WARN = 0xFF805600.toInt(); OK = 0xFF176B50.toInt(); ON_ACCENT = 0xFFFFFFFF.toInt(); DANGER_FG = 0xFFFFFFFF.toInt()
+            }
+            else -> {
+                BG = if (m == "amoled") 0xFF000000.toInt() else 0xFF080C11.toInt()
+                SURFACE = if (m == "amoled") 0xFF080C11.toInt() else 0xFF101820.toInt()
+                SURFACE2 = if (m == "amoled") 0xFF101820.toInt() else 0xFF1B2633.toInt()
+                STROKE = 0xFF314355.toInt(); EMERALD = 0xFF39A9EB.toInt(); MINT = 0xFF79C5F4.toInt(); TEXT = 0xFFF3F6FA.toInt(); MUTED = 0xFF8695A5.toInt()
+                DANGER = 0xFFF2A0A5.toInt(); WARN = 0xFFE4BC78.toInt(); OK = 0xFF78C8A4.toInt(); ON_ACCENT = 0xFF080C11.toInt(); DANGER_FG = 0xFF080C11.toInt()
+            }
+        }
+    }
 
     fun dp(c: Context, v: Int) = (v * c.resources.displayMetrics.density).toInt()
 
@@ -21,7 +44,7 @@ object Ui {
         setColor(fill); cornerRadius = dp(c, r).toFloat(); if (stroke != 0) setStroke(dp(c, 1), stroke)
     }
 
-    fun ripple(c: Context, base: GradientDrawable) = RippleDrawable(ColorStateList.valueOf(0x3314D48A), base, null)
+    fun ripple(c: Context, base: GradientDrawable) = RippleDrawable(ColorStateList.valueOf((EMERALD and 0xFFFFFF) or 0x33000000), base, null)
 
     fun text(c: Context, s: CharSequence, size: Float = 15f, color: Int = TEXT, bold: Boolean = false) = TextView(c).apply {
         text = s; textSize = size; setTextColor(color); if (bold) typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
@@ -32,8 +55,8 @@ object Ui {
         text = label; textSize = 15f; gravity = Gravity.CENTER; isClickable = true; isFocusable = true
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
         val (fill, stroke, fg) = when (kind) {
-            0 -> Triple(EMERALD, 0, 0xFF03150E.toInt())
-            2 -> Triple(DANGER, 0, Color.WHITE)
+            0 -> Triple(EMERALD, 0, ON_ACCENT)
+            2 -> Triple(DANGER, 0, DANGER_FG)
             else -> Triple(SURFACE, STROKE, TEXT)
         }
         setTextColor(fg); background = ripple(c, round(c, fill, 14, stroke))
@@ -55,8 +78,8 @@ object Ui {
     fun switchView(c: Context, checked: Boolean, onChange: (Boolean) -> Unit) = Switch(c).apply {
         isChecked = checked
         val states = arrayOf(intArrayOf(android.R.attr.state_checked), intArrayOf())
-        thumbTintList = ColorStateList(states, intArrayOf(MINT, 0xFF8FA69C.toInt()))
-        trackTintList = ColorStateList(states, intArrayOf(0xFF0E6E4A.toInt(), 0xFF2A3A33.toInt()))
+        thumbTintList = ColorStateList(states, intArrayOf(MINT, MUTED))
+        trackTintList = ColorStateList(states, intArrayOf((EMERALD and 0xFFFFFF) or 0x66000000, STROKE))
         setOnCheckedChangeListener { _, v -> onChange(v) }
     }
 
@@ -142,9 +165,9 @@ class ShieldView(c: Context, var mode: Int = 0, var tint: Int = Ui.EMERALD) : Vi
             cubicTo(w * .92f, h * .75f, w * .68f, h * .92f, w * .5f, h * .98f)
             cubicTo(w * .32f, h * .92f, w * .08f, h * .75f, w * .08f, h * .52f); lineTo(w * .08f, h * .18f); close()
         }
-        fill.color = (tint and 0x00FFFFFF) or 0x26000000; fill.setShadowLayer(w * .08f, 0f, 0f, tint)
+        fill.color = (tint and 0x00FFFFFF) or 0x26000000
         cv.drawPath(p, fill)
-        line.color = tint; line.strokeWidth = w * .045f; line.setShadowLayer(w * .06f, 0f, 0f, tint)
+        line.color = tint; line.strokeWidth = w * .045f
         cv.drawPath(p, line)
         line.strokeWidth = w * .075f
         val g = Path()
@@ -154,5 +177,23 @@ class ShieldView(c: Context, var mode: Int = 0, var tint: Int = Ui.EMERALD) : Vi
             else -> { g.moveTo(w * .5f, h * .28f); g.lineTo(w * .5f, h * .56f); g.moveTo(w * .5f, h * .70f); g.lineTo(w * .5f, h * .71f) }
         }
         cv.drawPath(g, line)
+    }
+}
+
+
+/** ZAEEM Browser symbol: minimal globe (platinum lines) with one azure orbital ring. Matte, no glow. */
+class GlobeView(c: Context) : View(c) {
+    private val line = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE; strokeCap = Paint.Cap.ROUND }
+    override fun onDraw(cv: Canvas) {
+        val w = width.toFloat(); if (w <= 0) return
+        val cx = w / 2f; val cy = height / 2f; val r = w * .30f
+        line.color = Ui.TEXT; line.strokeWidth = w * .028f
+        cv.drawCircle(cx, cy, r, line)
+        cv.drawOval(RectF(cx - r * .42f, cy - r, cx + r * .42f, cy + r), line)
+        cv.drawLine(cx, cy - r, cx, cy + r, line); cv.drawLine(cx - r, cy, cx + r, cy, line)
+        cv.drawArc(RectF(cx - r, cy - r * 1.25f, cx + r, cy - r * .15f), 20f, 140f, false, line)
+        cv.drawArc(RectF(cx - r, cy + r * .15f, cx + r, cy + r * 1.25f), 200f, 140f, false, line)
+        line.color = Ui.EMERALD; line.strokeWidth = w * .04f
+        cv.save(); cv.rotate(-22f, cx, cy); cv.drawOval(RectF(cx - w * .43f, cy - w * .12f, cx + w * .43f, cy + w * .12f), line); cv.restore()
     }
 }
