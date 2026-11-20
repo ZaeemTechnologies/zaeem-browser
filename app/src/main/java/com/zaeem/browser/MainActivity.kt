@@ -77,7 +77,7 @@ class MainActivity : Activity(), BrowserHost, SensorEventListener {
         app.sessions.onEnded = { runOnUiThread { space = app.prefs.spaces().first { it.id == "personal" }; goHome(); toast("Timed session ended. Its data was erased.") } }
         space = app.prefs.spaces().first { it.id == "personal" }
         window.statusBarColor = Ui.BG; window.navigationBarColor = Ui.BG
-        window.insetsController?.let { val m = android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS or android.view.WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS; it.setSystemBarsAppearance(if (Ui.isLight) m else 0, m) }
+        if (android.os.Build.VERSION.SDK_INT >= 30) window.insetsController?.let { val m = android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS or android.view.WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS; it.setSystemBarsAppearance(if (Ui.isLight) m else 0, m) }
         root = FrameLayout(this).apply { setBackgroundColor(Ui.BG); filterTouchesWhenObscured = true }   // tapjacking protection
         // Android 15 draws edge-to-edge for targetSdk 35: keep content clear of system bars, cutout and keyboard.
         root.setOnApplyWindowInsetsListener { v, ins ->
